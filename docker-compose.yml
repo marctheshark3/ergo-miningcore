@@ -1,0 +1,150 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: ergo-miningcore-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-miningcore}
+      POSTGRES_USER: ${POSTGRES_USER:-miningcore}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme123}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-miningcore}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - miningcore-network
+
+  # Primary Miningcore instance
+  miningcore-1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ergo-miningcore-1
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - TZ=${TZ:-UTC}
+      - INSTANCE_ID=1
+      - ERGO_NODE_HOST=${ERGO_NODE_HOST:-host.docker.internal}
+      - ERGO_NODE_PORT=${ERGO_NODE_PORT:-9053}
+    volumes:
+      - ./config/ergo-pool.json:/app/config.json:ro
+      - ./ssl:/app/ssl:ro
+      - ./logs:/app/logs
+      - miningcore_data_1:/app/data
+    ports:
+      # API port
+      - "${API_PORT_1:-4000}:4000"
+      # Stratum ports for miners (configurable)
+      - "${STRATUM_PORT_1:-4066}:4066"
+      - "${STRATUM_PORT_2:-4067}:4067"
+      - "${STRATUM_SSL_PORT_1:-4068}:4068"
+      - "${STRATUM_SSL_PORT_2:-4069}:4069"
+    networks:
+      - miningcore-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/api/pools"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Secondary Miningcore instance for load balancing (optional)
+  miningcore-2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ergo-miningcore-2
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - TZ=${TZ:-UTC}
+      - INSTANCE_ID=2
+      - ERGO_NODE_HOST=${ERGO_NODE_HOST:-host.docker.internal}
+      - ERGO_NODE_PORT=${ERGO_NODE_PORT:-9053}
+    volumes:
+      - ./config/ergo-pool.json:/app/config.json:ro
+      - ./ssl:/app/ssl:ro
+      - ./logs:/app/logs
+      - miningcore_data_2:/app/data
+    ports:
+      # API port
+      - "${API_PORT_2:-4001}:4000"
+      # Stratum ports for miners (configurable)
+      - "${STRATUM_PORT_3:-4070}:4066"
+      - "${STRATUM_PORT_4:-4071}:4067"
+      - "${STRATUM_SSL_PORT_3:-4072}:4068"
+      - "${STRATUM_SSL_PORT_4:-4073}:4069"
+    networks:
+      - miningcore-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/api/pools"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    profiles:
+      - scale  # Only start this when scaling is needed
+
+  nginx:
+    image: nginx:alpine
+    container_name: ergo-miningcore-nginx
+    restart: unless-stopped
+    depends_on:
+      - miningcore-1
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - ./logs/nginx:/var/log/nginx
+    ports:
+      - "${NGINX_HTTP_PORT:-80}:80"
+      - "${NGINX_HTTPS_PORT:-443}:443"
+      - "${NGINX_STRATUM_SSL_PORT:-4444}:4444"
+    networks:
+      - miningcore-network
+
+  # SSL certificate management
+  certbot:
+    image: certbot/certbot:latest
+    container_name: ergo-miningcore-certbot
+    volumes:
+      - ./ssl:/etc/letsencrypt
+      - ./scripts/renew-certs.sh:/usr/local/bin/renew-certs.sh:ro
+    command: /bin/sh -c "trap exit TERM; while :; do sleep 12h & wait $${!}; /usr/local/bin/renew-certs.sh; done;"
+    networks:
+      - miningcore-network
+
+volumes:
+  postgres_data:
+    driver: local
+    # Persistent PostgreSQL data - CRITICAL for miners' balances and shares
+    # This ensures data survives container restarts, updates, and system reboots
+  miningcore_data_1:
+    driver: local
+    # Persistent data for primary miningcore instance
+  miningcore_data_2:
+    driver: local
+    # Persistent data for secondary miningcore instance (when scaling)
+
+networks:
+  miningcore-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16 

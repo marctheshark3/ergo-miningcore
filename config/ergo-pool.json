@@ -1,0 +1,171 @@
+{
+    "$schema": "https://raw.githubusercontent.com/oliverw/miningcore/master/src/Miningcore/config.schema.json",
+    "logging": {
+        "level": "info",
+        "enableConsoleLog": true,
+        "enableConsoleColors": true,
+        "logFile": "logs/miningcore.log",
+        "apiLogFile": "logs/api.log",
+        "logBaseDirectory": "",
+        "perPoolLogFile": true
+    },
+    "banning": {
+        "manager": "Integrated",
+        "banOnJunkReceive": true,
+        "banOnInvalidShares": false,
+        "banOnLoginFailure": false
+    },
+    "notifications": {
+        "enabled": false,
+        "email": {
+            "host": "smtp.example.com",
+            "port": 587,
+            "user": "user",
+            "password": "password",
+            "fromAddress": "noreply@your-domain.com",
+            "fromName": "Ergo Mining Pool"
+        },
+        "admin": {
+            "enabled": false,
+            "emailAddress": "admin@your-domain.com",
+            "notifyBlockFound": true
+        }
+    },
+    "persistence": {
+        "postgres": {
+            "host": "postgres",
+            "port": 5432,
+            "user": "miningcore",
+            "password": "changeme123",
+            "database": "miningcore"
+        }
+    },
+    "paymentProcessing": {
+        "enabled": true,
+        "interval": 3600,
+        "shareRecoveryFile": "recovered-shares.txt"
+    },
+    "api": {
+        "enabled": true,
+        "listenAddress": "*",
+        "port": 4000,
+        "rateLimiting": {
+            "disabled": false,
+            "rules": [
+                {
+                    "endpoint": "*",
+                    "period": "1m",
+                    "limit": 300
+                }
+            ],
+            "ipWhitelist": []
+        }
+    },
+    "nicehash": {
+        "enableAutoDiff": true
+    },
+    "pools": [
+        {
+            "id": "ergo",
+            "enabled": true,
+            "coin": "ergo",
+            "address": "9fRusQZ4xkRPtaiwBFcUxJZKLhJSC8MLs8M7M2eQZq7LxjRGJsX",
+            "rewardRecipients": [
+                {
+                    "address": "9fRusQZ4xkRPtaiwBFcUxJZKLhJSC8MLs8M7M2eQZq7LxjRGJsX",
+                    "percentage": 1.0
+                }
+            ],
+            "blockRefreshInterval": 500,
+            "jobRebroadcastTimeout": 30,
+            "clientConnectionTimeout": 600,
+            "hashrateExpiration": 300,
+            "banning": {
+                "enabled": true,
+                "time": 300,
+                "invalidPercent": 50,
+                "checkThreshold": 50
+            },
+            "ports": {
+                "4066": {
+                    "difficulty": 0.1,
+                    "varDiff": {
+                        "minDiff": 0.0001,
+                        "maxDiff": 1000000,
+                        "targetTime": 15,
+                        "retargetTime": 90,
+                        "variancePercent": 30,
+                        "maxDelta": 500
+                    }
+                },
+                "4067": {
+                    "difficulty": 1,
+                    "varDiff": {
+                        "minDiff": 0.1,
+                        "maxDiff": 1000000,
+                        "targetTime": 15,
+                        "retargetTime": 90,
+                        "variancePercent": 30,
+                        "maxDelta": 500
+                    }
+                },
+                "4068": {
+                    "difficulty": 0.1,
+                    "tls": true,
+                    "tlsPfxFile": "/app/ssl/live/your-domain.com/cert.pfx",
+                    "tlsPfxPassword": "your-pfx-password",
+                    "varDiff": {
+                        "minDiff": 0.0001,
+                        "maxDiff": 1000000,
+                        "targetTime": 15,
+                        "retargetTime": 90,
+                        "variancePercent": 30,
+                        "maxDelta": 500
+                    }
+                },
+                "4069": {
+                    "difficulty": 1,
+                    "tls": true,
+                    "tlsPfxFile": "/app/ssl/live/your-domain.com/cert.pfx",
+                    "tlsPfxPassword": "your-pfx-password",
+                    "varDiff": {
+                        "minDiff": 0.1,
+                        "maxDiff": 1000000,
+                        "targetTime": 15,
+                        "retargetTime": 90,
+                        "variancePercent": 30,
+                        "maxDelta": 500
+                    }
+                }
+            },
+            "daemons": [
+                {
+                    "host": "host.docker.internal",
+                    "port": 9053,
+                    "user": "",
+                    "password": "",
+                    "ssl": false,
+                    "extra": {
+                        "apiKey": "your_api_key_here"
+                    }
+                }
+            ],
+            "paymentProcessing": {
+                "enabled": true,
+                "minimumPayment": 1.0,
+                "payoutScheme": "PPLNS",
+                "payoutSchemeConfig": {
+                    "factor": 2.0
+                },
+                "extra": {
+                    "walletPassword": "your_wallet_password_here",
+                    "minimumConfirmations": 720
+                }
+            },
+            "extra": {
+                "maxActiveJobs": 12,
+                "extraNonce1Size": 2
+            }
+        }
+    ]
+} 
