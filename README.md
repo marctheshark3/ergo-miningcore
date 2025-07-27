@@ -65,7 +65,7 @@ t-rex -a autolykos2 -o stratum+tcp://localhost:4074 -u YOUR_ERGO_ADDRESS -w solo
 ## Features
 
 - ✅ Full Ergo blockchain support with native implementation
-- ✅ **Solo Mining Support** - Mine for full block rewards (~67.5 ERG)
+- ✅ **Solo Mining Support** - Mine for full block rewards
 - ✅ SSL/TLS encryption for secure miner connections
 - ✅ Variable difficulty adjustment (vardiff)
 - ✅ Multiple stratum ports (Pool: 4066-4069, Solo: 4074-4077)
