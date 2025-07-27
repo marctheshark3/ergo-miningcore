@@ -40,19 +40,38 @@ docker-compose up -d
 curl http://localhost:4000/api/pools
 ```
 
-**Miners connect to**: `stratum+tcp://your-domain.com:4066`
+**Pool miners connect to**: `stratum+tcp://your-domain.com:4066`
+**Solo miners connect to**: `stratum+tcp://your-domain.com:4074`
+
+## 🎰 Solo Mining Quick Start
+
+Want to mine for full block rewards? Try solo mining:
+
+```bash
+# Start solo mining (after completing setup above)
+./scripts/start-solo-mining.sh
+
+# Test your setup
+./scripts/test-solo-mining.sh
+
+# Connect your miner
+t-rex -a autolykos2 -o stratum+tcp://localhost:4074 -u YOUR_ERGO_ADDRESS -w solo-miner
+```
+
+📚 **Full Solo Mining Guide**: See [SOLO-MINING.md](SOLO-MINING.md) for detailed documentation
 
 ---
 
 ## Features
 
 - ✅ Full Ergo blockchain support with native implementation
+- ✅ **Solo Mining Support** - Mine for full block rewards (~67.5 ERG)
 - ✅ SSL/TLS encryption for secure miner connections
 - ✅ Variable difficulty adjustment (vardiff)
-- ✅ Multiple stratum ports (4066, 4067, 4068 SSL, 4069 SSL)
+- ✅ Multiple stratum ports (Pool: 4066-4069, Solo: 4074-4077)
 - ✅ Real-time API for pool statistics
 - ✅ Automated payment processing
-- ✅ PPLNS (Pay Per Last N Shares) reward scheme
+- ✅ PPLNS (Pay Per Last N Shares) reward scheme + SOLO scheme
 - ✅ PostgreSQL database with automatic schema setup
 - ✅ Nginx reverse proxy with rate limiting
 - ✅ Let's Encrypt SSL certificate automation

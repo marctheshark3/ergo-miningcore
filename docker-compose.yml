@@ -102,6 +102,47 @@ services:
     profiles:
       - scale  # Only start this when scaling is needed
 
+  # Solo Mining instance - for individual miners
+  miningcore-solo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ergo-miningcore-solo
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - TZ=${TZ:-UTC}
+      - INSTANCE_ID=solo
+      - ERGO_NODE_HOST=${ERGO_NODE_HOST:-host.docker.internal}
+      - ERGO_NODE_PORT=${ERGO_NODE_PORT:-9053}
+    volumes:
+      - ./config/ergo-solo-pool.json:/app/config.json:ro
+      - ./ssl:/app/ssl:ro
+      - ./logs:/app/logs
+      - miningcore_data_solo:/app/data
+    ports:
+      # API port for solo mining
+      - "${SOLO_API_PORT:-4001}:4000"
+      # Solo mining stratum ports (lower difficulty for small miners)
+      - "${SOLO_STRATUM_PORT_1:-4074}:4074"
+      - "${SOLO_STRATUM_PORT_2:-4075}:4075"
+      - "${SOLO_STRATUM_SSL_PORT_1:-4076}:4076"
+      - "${SOLO_STRATUM_SSL_PORT_2:-4077}:4077"
+    networks:
+      - miningcore-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/api/pools"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    profiles:
+      - solo  # Only start when solo mining is needed
+
   nginx:
     image: nginx:alpine
     container_name: ergo-miningcore-nginx
@@ -141,6 +182,9 @@ volumes:
   miningcore_data_2:
     driver: local
     # Persistent data for secondary miningcore instance (when scaling)
+  miningcore_data_solo:
+    driver: local
+    # Persistent data for solo mining instance
 
 networks:
   miningcore-network:

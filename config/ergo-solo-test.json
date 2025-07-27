@@ -1,0 +1,135 @@
+{
+    "$schema": "https://raw.githubusercontent.com/oliverw/miningcore/master/src/Miningcore/config.schema.json",
+    "logging": {
+        "level": "debug",
+        "enableConsoleLog": true,
+        "enableConsoleColors": true,
+        "logFile": "logs/miningcore-solo-test.log",
+        "apiLogFile": "logs/api-solo-test.log",
+        "logBaseDirectory": "",
+        "perPoolLogFile": true
+    },
+    "banning": {
+        "manager": "Integrated",
+        "banOnJunkReceive": false,
+        "banOnInvalidShares": false,
+        "banOnLoginFailure": false
+    },
+    "notifications": {
+        "enabled": true,
+        "email": {
+            "host": "smtp.example.com",
+            "port": 587,
+            "user": "user",
+            "password": "password",
+            "fromAddress": "noreply@your-domain.com",
+            "fromName": "Ergo Solo Mining Test"
+        },
+        "admin": {
+            "enabled": true,
+            "emailAddress": "admin@your-domain.com",
+            "notifyBlockFound": true
+        }
+    },
+    "persistence": {
+        "postgres": {
+            "host": "postgres",
+            "port": 5432,
+            "user": "miningcore",
+            "password": "changeme123",
+            "database": "miningcore"
+        }
+    },
+    "paymentProcessing": {
+        "enabled": true,
+        "interval": 300,
+        "shareRecoveryFile": "recovered-shares-solo-test.txt"
+    },
+    "api": {
+        "enabled": true,
+        "listenAddress": "*",
+        "port": 4002,
+        "rateLimiting": {
+            "disabled": true,
+            "rules": [],
+            "ipWhitelist": []
+        }
+    },
+    "nicehash": {
+        "enableAutoDiff": true
+    },
+    "pools": [
+        {
+            "id": "ergo-solo-test",
+            "enabled": true,
+            "coin": "ergo",
+            "address": "9fRusQZ4xkRPtaiwBFcUxJZKLhJSC8MLs8M7M2eQZq7LxjRGJsX",
+            "rewardRecipients": [
+                {
+                    "address": "9fRusQZ4xkRPtaiwBFcUxJZKLhJSC8MLs8M7M2eQZq7LxjRGJsX",
+                    "percentage": 0.1
+                }
+            ],
+            "blockRefreshInterval": 1000,
+            "jobRebroadcastTimeout": 30,
+            "clientConnectionTimeout": 600,
+            "hashrateExpiration": 300,
+            "banning": {
+                "enabled": false,
+                "time": 300,
+                "invalidPercent": 50,
+                "checkThreshold": 50
+            },
+            "ports": {
+                "4078": {
+                    "difficulty": 0.001,
+                    "varDiff": {
+                        "minDiff": 0.0001,
+                        "maxDiff": 1000,
+                        "targetTime": 10,
+                        "retargetTime": 60,
+                        "variancePercent": 50,
+                        "maxDelta": 100
+                    }
+                },
+                "4079": {
+                    "difficulty": 0.005,
+                    "varDiff": {
+                        "minDiff": 0.001,
+                        "maxDiff": 10000,
+                        "targetTime": 15,
+                        "retargetTime": 90,
+                        "variancePercent": 30,
+                        "maxDelta": 500
+                    }
+                }
+            },
+            "daemons": [
+                {
+                    "host": "host.docker.internal",
+                    "port": 9053,
+                    "user": "",
+                    "password": "",
+                    "ssl": false,
+                    "extra": {
+                        "apiKey": "your_api_key_here"
+                    }
+                }
+            ],
+            "paymentProcessing": {
+                "enabled": true,
+                "minimumPayment": 0.01,
+                "payoutScheme": "SOLO",
+                "payoutSchemeConfig": {},
+                "extra": {
+                    "walletPassword": "your_wallet_password_here",
+                    "minimumConfirmations": 10
+                }
+            },
+            "extra": {
+                "maxActiveJobs": 4,
+                "extraNonce1Size": 2
+            }
+        }
+    ]
+} 
