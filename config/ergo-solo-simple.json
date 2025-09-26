@@ -1,0 +1,139 @@
+{
+    "$schema": "https://raw.githubusercontent.com/oliverw/miningcore/master/src/Miningcore/config.schema.json",
+    "logging": {
+        "level": "info",
+        "enableConsoleLog": true,
+        "enableConsoleColors": true,
+        "logFile": "logs/miningcore-solo.log",
+        "apiLogFile": "logs/api-solo.log",
+        "logBaseDirectory": "",
+        "perPoolLogFile": true
+    },
+    "banning": {
+        "manager": "Integrated",
+        "banOnJunkReceive": true,
+        "banOnInvalidShares": false,
+        "banOnLoginFailure": false
+    },
+    "notifications": {
+        "enabled": false,
+        "email": {
+            "host": "smtp.example.com",
+            "port": 587,
+            "user": "user",
+            "password": "password",
+            "fromAddress": "noreply@your-domain.com",
+            "fromName": "Ergo Solo Mining Pool"
+        },
+        "admin": {
+            "enabled": false,
+            "emailAddress": "admin@your-domain.com",
+            "notifyBlockFound": true
+        }
+    },
+    "persistence": {
+        "postgres": {
+            "host": "127.0.0.1",
+            "port": 5444,
+            "user": "miningcore",
+            "password": "changeme123",
+            "database": "miningcore"
+        }
+    },
+    "paymentProcessing": {
+        "enabled": true,
+        "interval": 600,
+        "shareRecoveryFile": "recovered-shares-solo.txt"
+    },
+    "api": {
+        "enabled": true,
+        "listenAddress": "*",
+        "port": 4000,
+        "rateLimiting": {
+            "disabled": false,
+            "rules": [
+                {
+                    "endpoint": "*",
+                    "period": "1m",
+                    "limit": 300
+                }
+            ],
+            "ipWhitelist": []
+        }
+    },
+    "nicehash": {
+        "enableAutoDiff": true
+    },
+    "pools": [
+        {
+            "id": "ergo-solo",
+            "enabled": true,
+            "coin": "ergo",
+            "address": "9f6a8rtMMmCpFbZT45Hnkm7L8SHaGZcvwh1MkQdoMkRgHtbDqQq",
+            "rewardRecipients": [
+                {
+                    "address": "9f6a8rtMMmCpFbZT45Hnkm7L8SHaGZcvwh1MkQdoMkRgHtbDqQq",
+                    "percentage": 0
+                }
+            ],
+            "blockRefreshInterval": 500,
+            "jobRebroadcastTimeout": 30,
+            "clientConnectionTimeout": 600,
+            "hashrateExpiration": 300,
+            "banning": {
+                "enabled": true,
+                "time": 300,
+                "invalidPercent": 50,
+                "checkThreshold": 50
+            },
+            "ports": {
+                "4074": {
+                    "difficulty": 0.01,
+                    "varDiff": {
+                        "minDiff": 0.001,
+                        "maxDiff": 10000000,
+                        "targetTime": 15,
+                        "retargetTime": 90,
+                        "variancePercent": 30,
+                        "maxDelta": 500
+                    }
+                },
+                "4075": {
+                    "difficulty": 0.1,
+                    "varDiff": {
+                        "minDiff": 0.01,
+                        "maxDiff": 10000000,
+                        "targetTime": 15,
+                        "retargetTime": 90,
+                        "variancePercent": 30,
+                        "maxDelta": 500
+                    }
+                }
+            },
+            "daemons": [
+                {
+                    "host": "127.0.0.1",
+                    "port": 9053,
+                    "user": "user",
+                    "password": "Colorado93#",
+                    "apiKey": "hello",
+                    "ssl": false
+                }
+            ],
+            "paymentProcessing": {
+                "enabled": true,
+                "minimumPayment": 0.1,
+                "payoutScheme": "SOLO",
+                "payoutSchemeConfig": {},
+                "extra": {
+                    "walletPassword": "your_wallet_password_here",
+                    "minimumConfirmations": 720
+                }
+            },
+            "extra": {
+                "maxActiveJobs": 12,
+                "extraNonce1Size": 2
+            }
+        }
+    ]
+} 

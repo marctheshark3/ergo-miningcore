@@ -1,0 +1,174 @@
+{
+    "$schema": "https://raw.githubusercontent.com/oliverw/miningcore/master/src/Miningcore/config.schema.json",
+    "logging": {
+        "level": "info",
+        "enableConsoleLog": true,
+        "enableConsoleColors": true,
+        "logFile": "logs/miningcore-public.log",
+        "apiLogFile": "logs/api-public.log",
+        "logBaseDirectory": "",
+        "perPoolLogFile": true
+    },
+    "banning": {
+        "manager": "Integrated",
+        "banOnJunkReceive": true,
+        "banOnInvalidShares": true,
+        "banOnLoginFailure": true
+    },
+    "notifications": {
+        "enabled": true,
+        "email": {
+            "host": "smtp.example.com",
+            "port": 587,
+            "user": "user",
+            "password": "password",
+            "fromAddress": "noreply@your-pool-domain.com",
+            "fromName": "Ergo Mining Pool"
+        },
+        "admin": {
+            "enabled": true,
+            "emailAddress": "admin@your-pool-domain.com",
+            "notifyBlockFound": true
+        },
+        "pushover": {
+            "enabled": false,
+            "user": "",
+            "token": ""
+        }
+    },
+    "persistence": {
+        "postgres": {
+            "host": "postgres",
+            "port": 5432,
+            "user": "miningcore",
+            "password": "changeme123",
+            "database": "miningcore"
+        }
+    },
+    "paymentProcessing": {
+        "enabled": true,
+        "interval": 300,
+        "shareRecoveryFile": "recovered-shares-public.txt"
+    },
+    "api": {
+        "enabled": true,
+        "listenAddress": "*",
+        "port": 4000,
+        "rateLimiting": {
+            "disabled": false,
+            "rules": [
+                {
+                    "endpoint": "*",
+                    "period": "1m",
+                    "limit": 300
+                }
+            ],
+            "ipWhitelist": []
+        }
+    },
+    "nicehash": {
+        "enableAutoDiff": true
+    },
+    "pools": [
+        {
+            "id": "ergo-public",
+            "enabled": true,
+            "coin": "ergo",
+            "address": "9f6a8rtMMmCpFbZT45Hnkm7L8SHaGZcvwh1MkQdoMkRgHtbDqQq",
+            "rewardRecipients": [
+                {
+                    "address": "9f6a8rtMMmCpFbZT45Hnkm7L8SHaGZcvwh1MkQdoMkRgHtbDqQq",
+                    "percentage": 1.0
+                }
+            ],
+            "blockRefreshInterval": 500,
+            "jobRebroadcastTimeout": 30,
+            "clientConnectionTimeout": 600,
+            "hashrateExpiration": 300,
+            "banning": {
+                "enabled": true,
+                "time": 300,
+                "invalidPercent": 50,
+                "checkThreshold": 50
+            },
+            "ports": {
+                "4444": {
+                    "difficulty": 0.1,
+                    "varDiff": {
+                        "minDiff": 0.01,
+                        "maxDiff": 10000000,
+                        "targetTime": 15,
+                        "retargetTime": 90,
+                        "variancePercent": 30,
+                        "maxDelta": 500
+                    }
+                },
+                "5555": {
+                    "difficulty": 1.0,
+                    "varDiff": {
+                        "minDiff": 0.1,
+                        "maxDiff": 10000000,
+                        "targetTime": 15,
+                        "retargetTime": 90,
+                        "variancePercent": 30,
+                        "maxDelta": 500
+                    }
+                },
+                "7777": {
+                    "difficulty": 10.0,
+                    "varDiff": {
+                        "minDiff": 1.0,
+                        "maxDiff": 10000000,
+                        "targetTime": 15,
+                        "retargetTime": 90,
+                        "variancePercent": 30,
+                        "maxDelta": 500
+                    },
+                    "tls": true,
+                    "tlsPfxFile": "certs/pool.pfx",
+                    "tlsPfxPassword": "your_certificate_password"
+                },
+                "8888": {
+                    "difficulty": 100.0,
+                    "varDiff": {
+                        "minDiff": 10.0,
+                        "maxDiff": 10000000,
+                        "targetTime": 15,
+                        "retargetTime": 90,
+                        "variancePercent": 30,
+                        "maxDelta": 500
+                    },
+                    "tls": true,
+                    "tlsPfxFile": "certs/pool.pfx",
+                    "tlsPfxPassword": "your_certificate_password"
+                }
+            },
+            "daemons": [
+                {
+                    "host": "127.0.0.1",
+                    "port": 9053,
+                    "user": "user",
+                    "password": "Colorado93#",
+                    "apiKey": "hello",
+                    "ssl": false
+                }
+            ],
+            "paymentProcessing": {
+                "enabled": true,
+                "minimumPayment": 1.0,
+                "payoutScheme": "PPLNS",
+                "payoutSchemeConfig": {
+                    "factor": 2.0
+                },
+                "extra": {
+                    "walletPassword": "your_wallet_password_here",
+                    "minimumConfirmations": 720
+                }
+            },
+            "extra": {
+                "maxActiveJobs": 12,
+                "extraNonce1Size": 2
+            }
+        }
+    ]
+}

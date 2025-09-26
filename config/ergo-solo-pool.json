@@ -69,11 +69,11 @@
             "id": "ergo-solo",
             "enabled": true,
             "coin": "ergo",
-            "address": "9fRusQZ4xkRPtaiwBFcUxJZKLhJSC8MLs8M7M2eQZq7LxjRGJsX",
+            "address": "9f6a8rtMMmCpFbZT45Hnkm7L8SHaGZcvwh1MkQdoMkRgHtbDqQq",
             "rewardRecipients": [
                 {
-                    "address": "9fRusQZ4xkRPtaiwBFcUxJZKLhJSC8MLs8M7M2eQZq7LxjRGJsX",
-                    "percentage": 0.5
+                    "address": "9f6a8rtMMmCpFbZT45Hnkm7L8SHaGZcvwh1MkQdoMkRgHtbDqQq",
+                    "percentage": 0
                 }
             ],
             "blockRefreshInterval": 500,
@@ -108,50 +108,20 @@
                         "variancePercent": 30,
                         "maxDelta": 500
                     }
-                },
-                "4076": {
-                    "difficulty": 0.01,
-                    "tls": true,
-                    "tlsPfxFile": "/app/ssl/live/your-domain.com/cert.pfx",
-                    "tlsPfxPassword": "your-pfx-password",
-                    "varDiff": {
-                        "minDiff": 0.001,
-                        "maxDiff": 10000000,
-                        "targetTime": 15,
-                        "retargetTime": 90,
-                        "variancePercent": 30,
-                        "maxDelta": 500
-                    }
-                },
-                "4077": {
-                    "difficulty": 0.1,
-                    "tls": true,
-                    "tlsPfxFile": "/app/ssl/live/your-domain.com/cert.pfx",
-                    "tlsPfxPassword": "your-pfx-password",
-                    "varDiff": {
-                        "minDiff": 0.01,
-                        "maxDiff": 10000000,
-                        "targetTime": 15,
-                        "retargetTime": 90,
-                        "variancePercent": 30,
-                        "maxDelta": 500
-                    }
                 }
             },
             "daemons": [
                 {
                     "host": "host.docker.internal",
                     "port": 9053,
-                    "user": "",
-                    "password": "",
-                    "ssl": false,
-                    "extra": {
-                        "apiKey": "your_api_key_here"
-                    }
+                    "user": "user",
+                    "password": "password",
+                    "apiKey": "hashcream",
+                    "ssl": false
                 }
             ],
             "paymentProcessing": {
-                "enabled": true,
+                "enabled": false,
                 "minimumPayment": 0.1,
                 "payoutScheme": "SOLO",
                 "payoutSchemeConfig": {},

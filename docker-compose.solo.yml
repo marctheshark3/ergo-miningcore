@@ -1,0 +1,63 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: ergo-miningcore-postgres-solo
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-miningcore}
+      POSTGRES_USER: ${POSTGRES_USER:-miningcore}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme123}
+    volumes:
+      - postgres_data_solo:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-miningcore}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - miningcore-solo-network
+
+  # Solo Mining instance - simplified for individual miners
+  miningcore-solo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ergo-miningcore-solo
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    network_mode: host
+    environment:
+      - TZ=${TZ:-UTC}
+      - INSTANCE_ID=solo
+      - ERGO_NODE_HOST=${ERGO_NODE_HOST:-127.0.0.1}
+      - ERGO_NODE_PORT=${ERGO_NODE_PORT:-9053}
+    volumes:
+      - ./config/ergo-solo-simple.json:/app/config.json:ro
+      - ./logs:/app/logs
+      - miningcore_data_solo:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4001/api/pools"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  postgres_data_solo:
+    driver: local
+    # Persistent PostgreSQL data for solo mining
+  miningcore_data_solo:
+    driver: local
+    # Persistent data for solo mining instance
+
+networks:
+  miningcore-solo-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16 
