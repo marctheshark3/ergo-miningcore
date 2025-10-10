@@ -116,7 +116,7 @@
                     "port": 9053,
                     "user": "user",
                     "password": "password",
-                    "apiKey": "hashcream",
+                    "apiKey": "apikey",
                     "ssl": false
                 }
             ],
