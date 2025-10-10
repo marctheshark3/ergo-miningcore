@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ergo Pool - Operator Dashboard</title>
+    <link rel="stylesheet" href="../assets/css/terminal-theme.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+    <!-- Password Protection Overlay -->
+    <div id="auth-overlay" class="auth-overlay">
+        <div class="auth-container">
+            <div class="auth-header">
+                <span class="auth-icon">🔐</span>
+                <h2>Operator Access</h2>
+            </div>
+            <div class="auth-body">
+                <p class="auth-description">Enter password to access operator dashboard</p>
+                <input type="password" id="auth-password" class="terminal-input" placeholder="Enter password...">
+                <button onclick="authenticate()" class="terminal-button">Access Dashboard</button>
+                <button onclick="skipAuth()" class="terminal-button" style="margin-top: 10px;">Skip (No Password Set)</button>
+            </div>
+            <div class="auth-footer">
+                <a href="../public/index.html" class="footer-link">← Back to Public Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="terminal-container" id="dashboard-content" style="display: none;">
+        <div class="terminal-header">
+            <div class="terminal-title">
+                <span class="terminal-icon">🔧</span>
+                <span>ERGO POOL - OPERATOR DASHBOARD</span>
+            </div>
+            <div class="terminal-controls">
+                <span class="status-indicator" id="api-status">●</span>
+                <span class="status-indicator" id="node-status">●</span>
+                <span class="last-update">Last update: <span id="last-update-time">--:--:--</span></span>
+            </div>
+        </div>
+
+        <div class="dashboard-grid admin-grid">
+            <!-- System Status Widget -->
+            <div class="widget system-status-widget">
+                <div class="widget-header">
+                    <span class="widget-title">💻 System Status</span>
+                </div>
+                <div class="widget-body">
+                    <div class="stat-row">
+                        <span class="stat-label">Pool Status:</span>
+                        <span class="stat-value" id="pool-status">
+                            <span class="status-dot online"></span>Online
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Node Status:</span>
+                        <span class="stat-value" id="node-connection">
+                            <span class="status-dot online"></span>Connected
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Database:</span>
+                        <span class="stat-value" id="db-status">
+                            <span class="status-dot online"></span>Healthy
+                        </span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Uptime:</span>
+                        <span class="stat-value" id="pool-uptime">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pool Stats (Enhanced) -->
+            <div class="widget pool-stats-widget">
+                <div class="widget-header">
+                    <span class="widget-title">📊 Pool Statistics</span>
+                </div>
+                <div class="widget-body">
+                    <div class="stat-row">
+                        <span class="stat-label">Connected Miners:</span>
+                        <span class="stat-value" id="connected-miners">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Pool Hashrate:</span>
+                        <span class="stat-value highlight-green" id="pool-hashrate">-- MH/s</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Valid Shares (24h):</span>
+                        <span class="stat-value" id="valid-shares">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Invalid Shares (24h):</span>
+                        <span class="stat-value highlight-red" id="invalid-shares">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Share Rate:</span>
+                        <span class="stat-value" id="share-rate">--/s</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Network Stats -->
+            <div class="widget network-stats-widget">
+                <div class="widget-header">
+                    <span class="widget-title">🌐 Network Info</span>
+                </div>
+                <div class="widget-body">
+                    <div class="stat-row">
+                        <span class="stat-label">Block Height:</span>
+                        <span class="stat-value highlight-magenta" id="block-height">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Network Hashrate:</span>
+                        <span class="stat-value highlight-green" id="network-hashrate">-- TH/s</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Difficulty:</span>
+                        <span class="stat-value" id="network-difficulty">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Peers:</span>
+                        <span class="stat-value" id="connected-peers">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Pool Share:</span>
+                        <span class="stat-value highlight-cyan" id="pool-network-share">--%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="widget performance-widget">
+                <div class="widget-header">
+                    <span class="widget-title">⚡ Performance Metrics</span>
+                </div>
+                <div class="widget-body">
+                    <div class="stat-row">
+                        <span class="stat-label">Avg Block Time:</span>
+                        <span class="stat-value" id="avg-block-time">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Pool Efficiency:</span>
+                        <span class="stat-value highlight-cyan" id="pool-efficiency">--%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Expected Blocks/Day:</span>
+                        <span class="stat-value" id="expected-blocks">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Actual Blocks (24h):</span>
+                        <span class="stat-value highlight-yellow" id="actual-blocks">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Luck Factor:</span>
+                        <span class="stat-value" id="luck-factor">--%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hashrate Chart -->
+            <div class="widget hashrate-chart-widget-large">
+                <div class="widget-header">
+                    <span class="widget-title">📈 Pool Hashrate History</span>
+                    <div class="widget-controls">
+                        <button class="chart-btn active" data-range="hour">1H</button>
+                        <button class="chart-btn" data-range="day">24H</button>
+                        <button class="chart-btn" data-range="week">7D</button>
+                    </div>
+                </div>
+                <div class="widget-body">
+                    <canvas id="hashrate-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Blocks -->
+            <div class="widget blocks-widget-admin">
+                <div class="widget-header">
+                    <span class="widget-title">🎯 Recent Blocks</span>
+                </div>
+                <div class="widget-body">
+                    <div id="blocks-table-container">
+                        <table class="terminal-table" id="blocks-table">
+                            <thead>
+                                <tr>
+                                    <th>Height</th>
+                                    <th>Status</th>
+                                    <th>Reward</th>
+                                    <th>Effort</th>
+                                    <th>Time</th>
+                                    <th>Miner</th>
+                                </tr>
+                            </thead>
+                            <tbody id="blocks-table-body">
+                                <tr><td colspan="6" class="empty-state">No blocks found</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Miners -->
+            <div class="widget miners-widget-admin">
+                <div class="widget-header">
+                    <span class="widget-title">⛏️ Active Miners</span>
+                </div>
+                <div class="widget-body">
+                    <div id="miners-table-container">
+                        <table class="terminal-table" id="miners-table">
+                            <thead>
+                                <tr>
+                                    <th>Miner</th>
+                                    <th>Hashrate</th>
+                                    <th>Workers</th>
+                                    <th>Shares/s</th>
+                                    <th>Last Activity</th>
+                                </tr>
+                            </thead>
+                            <tbody id="miners-table-body">
+                                <tr><td colspan="5" class="empty-state">No active miners</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Node Information -->
+            <div class="widget node-info-widget">
+                <div class="widget-header">
+                    <span class="widget-title">🔗 Node Information</span>
+                </div>
+                <div class="widget-body">
+                    <div class="info-section">
+                        <div class="info-label">Node Host:</div>
+                        <div class="info-value mono">127.0.0.1:9053</div>
+                    </div>
+                    <div class="info-section">
+                        <div class="info-label">Node Version:</div>
+                        <div class="info-value" id="node-version">--</div>
+                    </div>
+                    <div class="info-section">
+                        <div class="info-label">Sync Status:</div>
+                        <div class="info-value" id="sync-status">--</div>
+                    </div>
+                    <div class="info-section">
+                        <div class="info-label">Database Type:</div>
+                        <div class="info-value">PostgreSQL</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Info -->
+            <div class="widget payment-info-widget">
+                <div class="widget-header">
+                    <span class="widget-title">💰 Payment Information</span>
+                </div>
+                <div class="widget-body">
+                    <div class="stat-row">
+                        <span class="stat-label">Total Paid:</span>
+                        <span class="stat-value highlight-cyan" id="total-paid">0 ERG</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Pending Payments:</span>
+                        <span class="stat-value" id="pending-payments">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Last Payment:</span>
+                        <span class="stat-value" id="last-payment">Never</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Min Payment:</span>
+                        <span class="stat-value">0.1 ERG</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Payment Scheme:</span>
+                        <span class="stat-value">SOLO</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="widget actions-widget">
+                <div class="widget-header">
+                    <span class="widget-title">⚙️ Quick Actions</span>
+                </div>
+                <div class="widget-body">
+                    <button class="terminal-button action-btn" onclick="window.open('/api/help', '_blank')">
+                        📚 View API Docs
+                    </button>
+                    <button class="terminal-button action-btn" onclick="refreshDashboard()">
+                        🔄 Refresh Data
+                    </button>
+                    <button class="terminal-button action-btn" onclick="viewLogs()">
+                        📄 View Logs
+                    </button>
+                    <button class="terminal-button action-btn" onclick="window.open('/api/admin/stats/gc', '_blank')">
+                        💾 Memory Stats
+                    </button>
+                </div>
+            </div>
+
+            <!-- System Resources Widget -->
+            <div class="widget resources-widget">
+                <div class="widget-header">
+                    <span class="widget-title">💾 System Resources</span>
+                </div>
+                <div class="widget-body">
+                    <div class="stat-row">
+                        <span class="stat-label">Disk Usage:</span>
+                        <span class="stat-value" id="disk-usage">
+                            <span id="disk-percent">--%</span> (<span id="disk-used">--</span> / <span id="disk-total">--</span>)
+                        </span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="disk-progress" style="width: 0%"></div>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">CPU Usage:</span>
+                        <span class="stat-value" id="cpu-usage">--%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Memory Usage:</span>
+                        <span class="stat-value" id="memory-usage">--%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Load Average:</span>
+                        <span class="stat-value mono" id="load-average">-- -- --</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Component Sizes Widget -->
+            <div class="widget component-sizes-widget">
+                <div class="widget-header">
+                    <span class="widget-title">📦 Component Sizes</span>
+                </div>
+                <div class="widget-body">
+                    <div class="stat-row">
+                        <span class="stat-label">PostgreSQL DB:</span>
+                        <span class="stat-value highlight-cyan" id="postgres-size">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Ergo Node Data:</span>
+                        <span class="stat-value highlight-magenta" id="node-size">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Log Files:</span>
+                        <span class="stat-value highlight-yellow" id="logs-size">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Backups:</span>
+                        <span class="stat-value highlight-green" id="backups-size">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Docker Containers Widget -->
+            <div class="widget docker-widget">
+                <div class="widget-header">
+                    <span class="widget-title">🐳 Docker Containers</span>
+                </div>
+                <div class="widget-body">
+                    <div id="docker-containers-list">
+                        <div class="stat-row">
+                            <span class="stat-label">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts Widget -->
+            <div class="widget alerts-widget">
+                <div class="widget-header">
+                    <span class="widget-title">⚠️ Alerts & Notifications</span>
+                </div>
+                <div class="widget-body">
+                    <div id="alerts-list">
+                        <div class="alert-item alert-success">
+                            ✓ Pool running normally
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="terminal-footer">
+            <div class="footer-links">
+                <a href="../public/index.html" class="footer-link">👥 Public Dashboard</a>
+                <span class="separator">|</span>
+                <span class="footer-text">Logged in as: <span class="mono">Operator</span></span>
+                <span class="separator">|</span>
+                <button onclick="logout()" class="footer-link" style="background: none; border: none; cursor: pointer;">🚪 Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/chart.min.js"></script>
+    <script src="../assets/js/dashboard.js"></script>
+    <script src="../assets/js/admin.js"></script>
+</body>
+</html>
+
+

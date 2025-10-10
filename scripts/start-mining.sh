@@ -21,12 +21,14 @@ POOL_HOST=localhost
 POOL_PORT=4074  # Low difficulty port (change to 4075 for medium difficulty)
 
 # Mining configuration  
-WALLET=9ehJZvPDgvCNNd2zTQHxnSpcCAtb1kHbEN1VAgeoRD5DPVApYkk
+# Using your Ergo node wallet address (rewards go here in solo mining)
+WALLET=9fAxNSFbekcUxiSW7mtbjM39KHg3F5mcjePnu7658D8EXnS88UY
 WORKER=Capitol_Peak
-POWER_LIMIT=275
+POWER_LIMIT=300
 
 # Miner executable (adjust path as needed)
-MINER_PATH="./lolMiner"
+# Using T-Rex instead of lolMiner (better compatibility with RTX 3090)
+MINER_PATH="./t-rex"
 
 #################################
 ##  End of user-editable part  ##
@@ -36,7 +38,7 @@ echo -e "${BLUE}⛏️  Starting Ergo Solo Mining...${NC}"
 
 # Check if pool is running
 echo -e "${BLUE}🔍 Checking if solo mining pool is running...${NC}"
-if ! curl -s --connect-timeout 5 "http://localhost:4001/api/pools" > /dev/null; then
+if ! curl -s --connect-timeout 5 "http://localhost:4000/api/pools" > /dev/null; then
     echo -e "${RED}❌ Error: Solo mining pool is not running!${NC}"
     echo "Please start the pool first with: ./scripts/start-pool.sh"
     exit 1
@@ -46,8 +48,9 @@ echo -e "${GREEN}✅ Solo mining pool is running${NC}"
 
 # Check if miner exists
 if [ ! -f "$MINER_PATH" ]; then
-    echo -e "${RED}❌ Error: Miner not found at $MINER_PATH${NC}"
-    echo "Please update MINER_PATH in this script or place lolMiner in the current directory."
+    echo -e "${RED}❌ Error: T-Rex miner not found at $MINER_PATH${NC}"
+    echo "Please download T-Rex miner from: https://github.com/trexminer/T-Rex/releases"
+    echo "Extract it to the current directory and ensure the binary is named 't-rex'"
     exit 1
 fi
 
@@ -59,11 +62,8 @@ echo -e "Pool:           $POOL_HOST:$POOL_PORT"
 echo -e "Wallet:         $WALLET"
 echo -e "Worker:         $WORKER"
 echo -e "Power Limit:    ${POWER_LIMIT}W"
-echo -e "Miner:          $MINER_PATH"
+echo -e "Miner:          T-Rex v0.26.8 (Autolykos2)"
 echo ""
-
-# Construct full user string
-USER_STRING="$WALLET.$WORKER"
 
 echo -e "${BLUE}🚀 Starting mining...${NC}"
 echo -e "${YELLOW}💡 Press Ctrl+C to stop mining${NC}"
@@ -72,13 +72,14 @@ echo ""
 # Change to script directory
 cd "$(dirname "$0")/.."
 
-# Start mining with auto-restart on exit code 42
-$MINER_PATH --algo AUTOLYKOS2 --pool $POOL_HOST:$POOL_PORT --user $USER_STRING $@ --pl $POWER_LIMIT
-while [ $? -eq 42 ]; do
-    echo -e "${YELLOW}⚠️  Miner disconnected, restarting in 10 seconds...${NC}"
-    sleep 10s
-    $MINER_PATH --algo AUTOLYKOS2 --pool $POOL_HOST:$POOL_PORT --user $USER_STRING $@ --pl $POWER_LIMIT
-done
+# Start mining with T-Rex (different syntax than lolMiner)
+# T-Rex automatically reconnects on disconnection
+$MINER_PATH -a autolykos2 \
+    -o stratum+tcp://$POOL_HOST:$POOL_PORT \
+    -u $WALLET \
+    -w $WORKER \
+    --api-bind-http 127.0.0.1:4067 \
+    $@
 
 echo -e "${GREEN}✅ Mining stopped${NC}"
 

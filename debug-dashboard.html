@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard Debug Test</title>
+</head>
+<body>
+    <h1>Testing API Data Structure</h1>
+    <pre id="output"></pre>
+    
+    <script>
+        async function testAPI() {
+            try {
+                // Test through proxy
+                const response = await fetch('/api/pools/ergo-solo');
+                const data = await response.json();
+                
+                const output = document.getElementById('output');
+                output.textContent = JSON.stringify(data, null, 2);
+                
+                // Test the conditions
+                console.log('=== Testing Status Conditions ===');
+                console.log('pool exists:', !!data.pool);
+                console.log('networkStats exists:', !!data.pool?.networkStats);
+                console.log('blockHeight:', data.pool?.networkStats?.blockHeight);
+                console.log('blockHeight > 0:', data.pool?.networkStats?.blockHeight > 0);
+                console.log('connectedPeers:', data.pool?.networkStats?.connectedPeers);
+                console.log('connectedPeers > 0:', data.pool?.networkStats?.connectedPeers > 0);
+                
+                // This is what the dashboard should see
+                const poolIsWorking = data.pool && data.pool.networkStats && data.pool.networkStats.blockHeight > 0;
+                const nodeIsConnected = data.pool && data.pool.networkStats && data.pool.networkStats.connectedPeers > 0;
+                
+                console.log('=== Final Results ===');
+                console.log('poolIsWorking:', poolIsWorking);
+                console.log('nodeIsConnected:', nodeIsConnected);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('output').textContent = 'Error: ' + error.message;
+            }
+        }
+        
+        testAPI();
+    </script>
+</body>
+</html>
+
+

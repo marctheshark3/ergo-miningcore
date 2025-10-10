@@ -69,10 +69,10 @@
             "id": "ergo-solo",
             "enabled": true,
             "coin": "ergo",
-            "address": "9f6a8rtMMmCpFbZT45Hnkm7L8SHaGZcvwh1MkQdoMkRgHtbDqQq",
+            "address": "Your Ergo Wallet Address Here",
             "rewardRecipients": [
                 {
-                    "address": "9f6a8rtMMmCpFbZT45Hnkm7L8SHaGZcvwh1MkQdoMkRgHtbDqQq",
+                    "address": "Your Ergo Wallet Address Here",
                     "percentage": 0
                 }
             ],
@@ -80,6 +80,7 @@
             "jobRebroadcastTimeout": 30,
             "clientConnectionTimeout": 600,
             "hashrateExpiration": 300,
+            "maxBlockLag": 50,
             "banning": {
                 "enabled": true,
                 "time": 300,
@@ -115,7 +116,7 @@
                     "host": "127.0.0.1",
                     "port": 9053,
                     "user": "user",
-                    "password": "Colorado93#",
+                    "password": "changeme123",
                     "apiKey": "hello",
                     "ssl": false
                 }

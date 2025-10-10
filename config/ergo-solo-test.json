@@ -63,10 +63,10 @@
             "id": "ergo-solo-test",
             "enabled": true,
             "coin": "ergo",
-            "address": "9fRusQZ4xkRPtaiwBFcUxJZKLhJSC8MLs8M7M2eQZq7LxjRGJsX",
+            "address": "",
             "rewardRecipients": [
                 {
-                    "address": "9fRusQZ4xkRPtaiwBFcUxJZKLhJSC8MLs8M7M2eQZq7LxjRGJsX",
+                    "address": "",
                     "percentage": 0.1
                 }
             ],

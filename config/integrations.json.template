@@ -1,0 +1,68 @@
+{
+  "telegram": {
+    "enabled": false,
+    "botToken": "",
+    "chatIds": [],
+    "alerts": {
+      "poolOffline": true,
+      "nodeDisconnected": true,
+      "diskSpaceWarning": true,
+      "diskSpaceCritical": true,
+      "highCpuUsage": true,
+      "highMemoryUsage": true,
+      "noBlocksFound": false,
+      "newBlockFound": true,
+      "paymentFailed": false
+    },
+    "messageFormat": "markdown"
+  },
+  "discord": {
+    "enabled": false,
+    "webhookUrl": "",
+    "username": "Ergo Pool Monitor",
+    "avatarUrl": "",
+    "alerts": {
+      "poolOffline": true,
+      "diskSpaceCritical": true,
+      "newBlockFound": true,
+      "highCpuUsage": false
+    }
+  },
+  "email": {
+    "enabled": false,
+    "smtp": {
+      "host": "smtp.gmail.com",
+      "port": 587,
+      "username": "",
+      "password": "",
+      "useTLS": true
+    },
+    "from": "noreply@yourpool.com",
+    "recipients": [],
+    "alerts": {
+      "poolOffline": true,
+      "criticalOnly": true
+    }
+  },
+  "slack": {
+    "enabled": false,
+    "webhookUrl": "",
+    "channel": "#pool-alerts",
+    "username": "Pool Monitor"
+  },
+  "customWebhook": {
+    "enabled": false,
+    "url": "",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer YOUR_TOKEN"
+    },
+    "payloadTemplate": {
+      "alert": "{alert_type}",
+      "message": "{message}",
+      "timestamp": "{timestamp}"
+    }
+  }
+}
+

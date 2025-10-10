@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ergo Solo Mining Pool - Dashboard</title>
+    <link rel="stylesheet" href="../assets/css/terminal-theme.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+</head>
+<body>
+    <div class="terminal-container">
+        <div class="terminal-header">
+            <div class="terminal-title">
+                <span class="terminal-icon">⛏️</span>
+                <span>ERGO SOLO MINING POOL - PUBLIC DASHBOARD</span>
+            </div>
+            <div class="terminal-controls">
+                <span class="status-indicator" id="api-status">●</span>
+                <span class="last-update">Last update: <span id="last-update-time">--:--:--</span></span>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Pool Stats Widget -->
+            <div class="widget pool-stats-widget">
+                <div class="widget-header">
+                    <span class="widget-title">📊 Pool Statistics</span>
+                </div>
+                <div class="widget-body">
+                    <div class="stat-row">
+                        <span class="stat-label">Connected Miners:</span>
+                        <span class="stat-value" id="connected-miners">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Pool Hashrate:</span>
+                        <span class="stat-value highlight-green" id="pool-hashrate">-- MH/s</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Shares/Second:</span>
+                        <span class="stat-value" id="shares-per-second">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Total Blocks:</span>
+                        <span class="stat-value highlight-yellow" id="total-blocks">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Total Paid:</span>
+                        <span class="stat-value highlight-cyan" id="total-paid">0 ERG</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Pool Effort:</span>
+                        <span class="stat-value" id="pool-effort">--%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Network Stats Widget -->
+            <div class="widget network-stats-widget">
+                <div class="widget-header">
+                    <span class="widget-title">🌐 Network Statistics</span>
+                </div>
+                <div class="widget-body">
+                    <div class="stat-row">
+                        <span class="stat-label">Network Type:</span>
+                        <span class="stat-value" id="network-type">mainnet</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Block Height:</span>
+                        <span class="stat-value highlight-magenta" id="block-height">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Network Hashrate:</span>
+                        <span class="stat-value highlight-green" id="network-hashrate">-- TH/s</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Difficulty:</span>
+                        <span class="stat-value" id="network-difficulty">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Connected Peers:</span>
+                        <span class="stat-value" id="connected-peers">--</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Last Block:</span>
+                        <span class="stat-value" id="last-network-block">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hashrate Chart -->
+            <div class="widget hashrate-chart-widget">
+                <div class="widget-header">
+                    <span class="widget-title">📈 Pool Hashrate (24h)</span>
+                </div>
+                <div class="widget-body">
+                    <canvas id="hashrate-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Pool Effort Gauge -->
+            <div class="widget effort-gauge-widget">
+                <div class="widget-header">
+                    <span class="widget-title">🎯 Pool Effort</span>
+                </div>
+                <div class="widget-body">
+                    <div class="gauge-container">
+                        <svg class="gauge" viewBox="0 0 200 120">
+                            <path class="gauge-bg" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#1a1a2e" stroke-width="15"/>
+                            <path id="gauge-fill" class="gauge-fill" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#00ff00" stroke-width="15"/>
+                            <text x="100" y="90" text-anchor="middle" class="gauge-text" id="gauge-text">0%</text>
+                        </svg>
+                        <div class="gauge-label">
+                            Expected time to block: <span id="time-to-block" class="highlight-yellow">calculating...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Blocks Widget -->
+            <div class="widget blocks-widget">
+                <div class="widget-header">
+                    <span class="widget-title">🎯 Recent Blocks</span>
+                    <span class="widget-subtitle">(Last 10)</span>
+                </div>
+                <div class="widget-body">
+                    <div class="blocks-list" id="blocks-list">
+                        <div class="empty-state">No blocks found yet. Keep mining!</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Miners Widget -->
+            <div class="widget miners-widget">
+                <div class="widget-header">
+                    <span class="widget-title">⛏️ Top Miners</span>
+                    <span class="widget-subtitle">(Last 24h)</span>
+                </div>
+                <div class="widget-body">
+                    <div class="miners-list" id="miners-list">
+                        <div class="empty-state">No active miners</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pool Info Widget -->
+            <div class="widget info-widget">
+                <div class="widget-header">
+                    <span class="widget-title">ℹ️ Pool Information</span>
+                </div>
+                <div class="widget-body">
+                    <div class="info-section">
+                        <div class="info-label">Pool Address:</div>
+                        <div class="info-value mono" id="pool-address">Loading...</div>
+                    </div>
+                    <div class="info-section">
+                        <div class="info-label">Stratum Endpoints:</div>
+                        <div class="info-value mono">
+                            <div>stratum+tcp://YOUR_IP:4074 (low diff)</div>
+                            <div>stratum+tcp://YOUR_IP:4075 (high diff)</div>
+                        </div>
+                    </div>
+                    <div class="info-section">
+                        <div class="info-label">Payment Scheme:</div>
+                        <div class="info-value">SOLO (100% to block finder)</div>
+                    </div>
+                    <div class="info-section">
+                        <div class="info-label">Minimum Payment:</div>
+                        <div class="info-value">0.1 ERG</div>
+                    </div>
+                    <div class="info-section">
+                        <div class="info-label">Pool Fee:</div>
+                        <div class="info-value">0%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sparkline Widget -->
+            <div class="widget sparkline-widget">
+                <div class="widget-header">
+                    <span class="widget-title">✨ Activity Sparklines</span>
+                </div>
+                <div class="widget-body">
+                    <div class="sparkline-row">
+                        <span class="sparkline-label">Shares:</span>
+                        <canvas id="shares-sparkline" width="200" height="30"></canvas>
+                    </div>
+                    <div class="sparkline-row">
+                        <span class="sparkline-label">Hashrate:</span>
+                        <canvas id="hashrate-sparkline" width="200" height="30"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="terminal-footer">
+            <div class="footer-links">
+                <a href="../admin/index.html" class="footer-link">🔐 Operator Dashboard</a>
+                <span class="separator">|</span>
+                <a href="/api/help" target="_blank" class="footer-link">📚 API Documentation</a>
+                <span class="separator">|</span>
+                <span class="footer-text">Pool ID: <span class="mono">ergo-solo</span></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/chart.min.js"></script>
+    <script src="../assets/js/dashboard.js"></script>
+</body>
+</html>
+
+

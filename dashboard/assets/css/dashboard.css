@@ -1,0 +1,430 @@
+/* Dashboard Grid Layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--spacing-md);
+    flex: 1;
+}
+
+/* Widget Grid Positioning */
+.pool-stats-widget {
+    grid-column: span 3;
+}
+
+.network-stats-widget {
+    grid-column: span 3;
+}
+
+.hashrate-chart-widget {
+    grid-column: span 6;
+    grid-row: span 2;
+}
+
+.effort-gauge-widget {
+    grid-column: span 3;
+}
+
+.blocks-widget {
+    grid-column: span 6;
+    grid-row: span 2;
+}
+
+.miners-widget {
+    grid-column: span 6;
+    grid-row: span 2;
+}
+
+.info-widget {
+    grid-column: span 3;
+}
+
+.sparkline-widget {
+    grid-column: span 3;
+}
+
+/* Blocks List Styling */
+.blocks-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.block-item {
+    background: rgba(0, 255, 170, 0.05);
+    border-left: 3px solid var(--accent-green);
+    padding: var(--spacing-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.block-item:hover {
+    background: rgba(0, 255, 170, 0.1);
+    transform: translateX(5px);
+}
+
+.block-item.confirmed {
+    border-left-color: var(--accent-green);
+}
+
+.block-item.pending {
+    border-left-color: var(--accent-yellow);
+}
+
+.block-item.orphaned {
+    border-left-color: var(--accent-red);
+    opacity: 0.6;
+}
+
+.block-info {
+    flex: 1;
+}
+
+.block-height {
+    font-weight: bold;
+    color: var(--accent-cyan);
+}
+
+.block-status {
+    font-size: 0.85em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.block-status.confirmed {
+    background: rgba(0, 255, 0, 0.2);
+    color: var(--accent-green);
+}
+
+.block-status.pending {
+    background: rgba(255, 255, 0, 0.2);
+    color: var(--accent-yellow);
+}
+
+.block-status.orphaned {
+    background: rgba(255, 0, 0, 0.2);
+    color: var(--accent-red);
+}
+
+.block-reward {
+    color: var(--accent-yellow);
+    font-weight: bold;
+}
+
+.block-time {
+    color: var(--text-muted);
+    font-size: 0.85em;
+}
+
+/* Miners List Styling */
+.miners-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.miner-item {
+    background: rgba(0, 212, 255, 0.05);
+    border-left: 3px solid var(--accent-cyan);
+    padding: var(--spacing-sm);
+    transition: all 0.3s ease;
+}
+
+.miner-item:hover {
+    background: rgba(0, 212, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.miner-address {
+    font-size: 0.9em;
+    color: var(--accent-cyan);
+    margin-bottom: 4px;
+    word-break: break-all;
+}
+
+.miner-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85em;
+}
+
+.miner-hashrate {
+    color: var(--accent-green);
+    font-weight: bold;
+}
+
+.miner-shares {
+    color: var(--text-secondary);
+}
+
+/* Gauge Styling */
+.gauge-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.gauge {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+}
+
+.gauge-bg {
+    stroke-linecap: round;
+}
+
+.gauge-fill {
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s ease;
+}
+
+.gauge-text {
+    font-size: 24px;
+    fill: var(--text-primary);
+    font-weight: bold;
+}
+
+.gauge-label {
+    margin-top: var(--spacing-md);
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+/* Info Widget Styling */
+.info-section {
+    margin-bottom: var(--spacing-md);
+}
+
+.info-section:last-child {
+    margin-bottom: 0;
+}
+
+.info-label {
+    color: var(--text-secondary);
+    font-size: 0.85em;
+    margin-bottom: var(--spacing-xs);
+}
+
+.info-value {
+    color: var(--text-primary);
+    font-size: 0.9em;
+    line-height: 1.8;
+}
+
+/* Sparkline Styling */
+.sparkline-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.sparkline-row:last-child {
+    margin-bottom: 0;
+}
+
+.sparkline-label {
+    color: var(--text-secondary);
+    min-width: 80px;
+}
+
+canvas {
+    width: 100%;
+    height: auto;
+}
+
+/* Chart Container */
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+}
+
+/* Responsive Grid */
+@media (max-width: 1400px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(8, 1fr);
+    }
+    
+    .pool-stats-widget,
+    .network-stats-widget {
+        grid-column: span 4;
+    }
+    
+    .hashrate-chart-widget {
+        grid-column: span 8;
+    }
+    
+    .effort-gauge-widget,
+    .info-widget,
+    .sparkline-widget {
+        grid-column: span 4;
+    }
+    
+    .blocks-widget,
+    .miners-widget {
+        grid-column: span 8;
+    }
+}
+
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .pool-stats-widget,
+    .network-stats-widget,
+    .hashrate-chart-widget,
+    .effort-gauge-widget,
+    .blocks-widget,
+    .miners-widget,
+    .info-widget,
+    .sparkline-widget {
+        grid-column: span 4;
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pool-stats-widget,
+    .network-stats-widget,
+    .hashrate-chart-widget,
+    .effort-gauge-widget,
+    .blocks-widget,
+    .miners-widget,
+    .info-widget,
+    .sparkline-widget {
+        grid-column: span 1;
+    }
+}
+
+/* Loading States */
+.widget.loading .widget-body {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.widget.loading::after {
+    content: '⟳';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2em;
+    color: var(--accent-cyan);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Notification Badge */
+.notification-badge {
+    background: var(--accent-red);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.75em;
+    font-weight: bold;
+    margin-left: var(--spacing-xs);
+}
+
+/* Progress Bar */
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: var(--spacing-xs);
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+    transition: width 0.5s ease;
+}
+
+/* Status Indicators */
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: var(--spacing-xs);
+}
+
+.status-dot.online {
+    background: var(--accent-green);
+    box-shadow: 0 0 5px var(--accent-green);
+}
+
+.status-dot.offline {
+    background: var(--accent-red);
+    box-shadow: 0 0 5px var(--accent-red);
+}
+
+.status-dot.warning {
+    background: var(--accent-yellow);
+    box-shadow: 0 0 5px var(--accent-yellow);
+}
+
+/* Tooltip */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    text-align: center;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    padding: var(--spacing-sm);
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-in {
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+
