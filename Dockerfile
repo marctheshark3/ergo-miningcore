@@ -4,7 +4,8 @@ RUN apt-get update && \
     apt-get -y install cmake build-essential libssl-dev pkg-config libboost-all-dev libsodium-dev libzmq5 libzmq3-dev golang-go
 COPY . .
 WORKDIR /app/src/Miningcore
-RUN dotnet publish -c Release --framework net6.0 -o ../../build
+ENV DisableGitVersion=true
+RUN dotnet publish -c Release --framework net6.0 -o ../../build /p:DisableGitVersion=true
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-jammy
 WORKDIR /app
