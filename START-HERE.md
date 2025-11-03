@@ -273,3 +273,8 @@ Your Ergo solo mining pool with a beautiful terminal-themed dashboard is ready!
 *For questions or issues, check the documentation in the project folder.*
 
 
+
+
+
+
+

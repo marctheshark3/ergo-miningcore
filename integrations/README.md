@@ -236,3 +236,8 @@ self.check_interval = 300  # 5 minutes
 
 See the main integration guide: `../INTEGRATION-SETUP-GUIDE.md`
 
+
+
+
+
+

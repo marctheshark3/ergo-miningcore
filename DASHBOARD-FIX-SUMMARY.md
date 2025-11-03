@@ -172,3 +172,8 @@ Open browser developer tools (F12) and check Console tab:
 Your Ergo mining pool dashboard should now display all information correctly.
 
 
+
+
+
+
+
